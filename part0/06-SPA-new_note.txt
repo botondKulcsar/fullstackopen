@@ -1,0 +1,6 @@
+note over browser
+browser starts executing js-code
+and redraws the notes (line 58) before sending the new note to server (line 59)
+end note
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server->browser: {"message":"note created"}
