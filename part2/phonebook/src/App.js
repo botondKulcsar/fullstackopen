@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import personService from "./services/persons"
 
-const Notification = ({ name }) => {
+const Notification = ({ message }) => {
   const notificationStyle = {
     borderStyle: "solid",
     borderColor: "green",
@@ -15,12 +15,12 @@ const Notification = ({ name }) => {
 
   return (
     <div style={notificationStyle}>
-      Added {name}
+      { message }
     </div>
   )
 }
 
-const Error = ({ name }) => {
+const Error = ({ message }) => {
   const errorStyle = {
     borderStyle: "solid",
     borderColor: "red",
@@ -33,7 +33,7 @@ const Error = ({ name }) => {
 
   return (
     <div style={errorStyle}>
-      Information of { name } has already been removed from server
+      { message }
     </div>
   )
 }
@@ -93,7 +93,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
-  const [showNotification, setShowNotification] = useState(null);
+  const [notification, setNotification] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -114,17 +114,14 @@ const App = () => {
           .update(alreadyAdded.id, updatedPerson)
           .then(updatedPerson => {
             setPersons(persons.map(p => p.id === updatedPerson.id ? updatedPerson : p));
-            setShowNotification(updatedPerson.name);
-            setTimeout(() => setShowNotification(false), 5000)
+            setNotification(`${updatedPerson.name} has been updated`);
+            setTimeout(() => setNotification(null), 5000)
             setNewName('');
             setNewNumber('');
           })
           .catch(error => {
-            setError(newName)
-            setNewName('');
-            setNewNumber('');
-            setTimeout(() => setError(null), 5000)
-            setPersons(persons.filter(p => p.id !== alreadyAdded.id))
+            setError(error.response.data.error)
+            setTimeout(() => setError(null), 4000)
           })
 
       }
@@ -136,10 +133,14 @@ const App = () => {
       .create(newPerson)
       .then(savedPerson => {
         setPersons(persons.concat(savedPerson));
-        setShowNotification(savedPerson.name);
-        setTimeout(() => setShowNotification(false), 5000)
+        setNotification(`Added ${savedPerson.name}`);
+        setTimeout(() => setNotification(null), 5000)
         setNewName('');
         setNewNumber('');
+      })
+      .catch(error => {
+        setError(error.response.data.error);
+        setTimeout(() => { setError(null) }, 5000)
       })
 
   }
@@ -151,6 +152,8 @@ const App = () => {
       personService
         .remove(id)
         .then(deletedPerson => {
+          setNotification(`${personToRemove.name} has been deleted`);
+          setTimeout(() => setNotification(null), 4000);
           setPersons(persons.filter(person => person.id !== id))
         })
     }
@@ -177,8 +180,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {showNotification && <Notification name={showNotification} />}
-      {error && <Error name={error} />}
+      {notification && <Notification message={notification} />}
+      {error && <Error message={error} />}
       <Filter
         value={filter}
         onChange={handleFilter}
