@@ -1,5 +1,5 @@
 const reducer = (state = '', action) => {
-    
+
     switch (action.type) {
         case 'SET_MESSAGE':
             return action.message
@@ -10,17 +10,21 @@ const reducer = (state = '', action) => {
     }
 }
 
-export const setMessage = message => {
-    return {
-        type: 'SET_MESSAGE',
-        message
-    }
-}
-
-export const removeMessage = () => {
+const removeMessage = () => {
     return {
         type: 'REMOVE_MESSAGE'
     }
 }
+
+export const setMessage = (message, seconds) => {
+    return async (dispatch) => {
+        dispatch({
+            type: 'SET_MESSAGE',
+            message
+        })
+        setTimeout(() => dispatch(removeMessage()), seconds * 1000)
+    }
+}
+
 
 export default reducer
