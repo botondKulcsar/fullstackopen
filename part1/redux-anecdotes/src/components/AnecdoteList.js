@@ -27,9 +27,9 @@ const AnecdoteList = () => {
     })
     const dispatch = useDispatch()
 
-    const vote = ({ id, content }) => {
-        dispatch(voteForAnecdote(id))
-        dispatch(setMessage(`you voted '${content}'`))
+    const vote = (anecdote) => {
+        dispatch(voteForAnecdote(anecdote))
+        dispatch(setMessage(`you voted '${anecdote.content}'`))
         setTimeout(() => dispatch(removeMessage()), 5000)
     }
 
@@ -42,7 +42,7 @@ const AnecdoteList = () => {
                         key={anecdote.id}
                         content={anecdote.content}
                         votes={anecdote.votes}
-                        handleClick={() => vote({ id: anecdote.id, content: anecdote.content })}
+                        handleClick={() => vote(anecdote)}
                     />
                 )}
         </>
