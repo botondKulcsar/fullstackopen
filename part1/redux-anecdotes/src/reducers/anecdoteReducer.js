@@ -45,7 +45,10 @@ const reducer = (state = initialState, action) => {
     case 'VOTE':
       const newState = state.map(anecdote => {
         if (anecdote.id === action.data.id) {
-          anecdote.votes += 1
+          return {
+            ...anecdote,
+            votes: anecdote.votes + 1
+          }
         }
         return anecdote
       })
