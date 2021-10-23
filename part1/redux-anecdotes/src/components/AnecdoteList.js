@@ -18,10 +18,16 @@ const Anecdote = ({ content, votes, handleClick }) => {
 }
 
 const AnecdoteList = () => {
-    const anecdotes = useSelector(state => state.anecdotes)
+    const anecdotes = useSelector(state => {
+        if (state.filter) {
+            return state.anecdotes.filter(a =>
+                a.content.toLowerCase().includes(state.filter))
+        }
+        return state.anecdotes
+    })
     const dispatch = useDispatch()
 
-    const vote = ({id, content}) => {
+    const vote = ({ id, content }) => {
         dispatch(voteForAnecdote(id))
         dispatch(setMessage(`you voted '${content}'`))
         setTimeout(() => dispatch(removeMessage()), 5000)
@@ -36,7 +42,7 @@ const AnecdoteList = () => {
                         key={anecdote.id}
                         content={anecdote.content}
                         votes={anecdote.votes}
-                        handleClick={() => vote({id: anecdote.id, content: anecdote.content})}
+                        handleClick={() => vote({ id: anecdote.id, content: anecdote.content })}
                     />
                 )}
         </>
