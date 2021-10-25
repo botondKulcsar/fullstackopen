@@ -16,13 +16,18 @@ const removeMessage = () => {
     }
 }
 
+let timeout;
 export const setMessage = (message, seconds) => {
     return async (dispatch) => {
+        if (timeout) {
+            clearTimeout(timeout)
+        }
+        timeout = setTimeout(() => dispatch(removeMessage()), seconds * 1000)
+        
         dispatch({
             type: 'SET_MESSAGE',
             message
         })
-        setTimeout(() => dispatch(removeMessage()), seconds * 1000)
     }
 }
 
