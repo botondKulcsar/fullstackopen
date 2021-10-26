@@ -4,7 +4,8 @@ import {
   Link,
   Switch,
   Route,
-  useRouteMatch
+  useRouteMatch,
+  useHistory
 } from 'react-router-dom'
 
 const Menu = () => {
@@ -67,7 +68,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
-
+  
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -101,6 +102,10 @@ const CreateNew = (props) => {
 
 }
 
+const Notification = ({ content }) => (
+  <p>a new anecdote {content} created!</p>
+)
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -121,9 +126,14 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
 
+  const history = useHistory()
+
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    history.push('/')
+    setNotification(anecdote.content)
+    setTimeout(() => setNotification(''), 10000)
   }
 
   const anecdoteById = (id) =>
@@ -151,6 +161,7 @@ const App = () => {
       <h1>Software anecdotes</h1>
 
       <Menu />
+      {notification && <Notification content={notification} />}
       <Switch>
         <Route path='/anecdotes/:id'>
           <Anecdote anecdote={anecdote} />
