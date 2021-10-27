@@ -69,7 +69,7 @@ const CreateNew = (props) => {
   // const [content, setContent] = useState('')
   // const [author, setAuthor] = useState('')
   // const [info, setInfo] = useState('')
-  const { value: content, onChange: contentChange} = useField('text')
+  const { value: content, onChange: contentChange, reset: contentReset} = useField('text')
   const author = useField('text')
   const info = useField('text')
 
@@ -82,6 +82,12 @@ const CreateNew = (props) => {
       info: info.value,
       votes: 0
     })
+  }
+
+  const clearForm = () => {
+    contentReset()
+    author.reset()
+    info.reset()
   }
 
   return (
@@ -100,7 +106,8 @@ const CreateNew = (props) => {
           url for more info
           <input name='info' value={info.value} onChange={info.onChange} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="button"  onClick={clearForm}>reset</button>
       </form>
     </div>
   )
